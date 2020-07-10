@@ -1,0 +1,176 @@
+#include <LiquidCrystal.h>  //Data library LCD
+//===deklarasi
+//Deklarasi suhu
+float suhuC;
+
+//Deklarasi Pin pada Arduino
+int Pinsuhu = A0;
+const int pinsuhulow1 = 0;
+const int pinsuhulow2 = 1;
+const int pinsuhumedium1 = 2;
+const int pinsuhumedium2 = 3;
+const int pinsuhuhigh1 = 4;
+const int pinsuhuhigh2 = 5;
+const int pinsuhuwarning = 6;
+const int pin_kipas = 7;
+
+//Deklarasi untuk pin pada LCD pada arduino
+const int rs = 13, en = 12, d4 =11, d5 = 10, d6 = 9, d7 = 8;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
+void setup() {
+  //==Deklarasi Fungsi pin pada Arduino
+  pinMode(pinsuhulow1,OUTPUT);
+  pinMode(pinsuhulow2,OUTPUT);
+  pinMode(pinsuhumedium1,OUTPUT);
+  pinMode(pinsuhumedium2,OUTPUT);
+  pinMode(pinsuhuhigh1,OUTPUT);
+  pinMode(pinsuhuhigh2,OUTPUT);
+  pinMode(pinsuhuwarning,OUTPUT);
+  pinMode(pin_kipas,OUTPUT);
+  
+
+ //Set LCD
+  lcd.begin(16, 2);//Deklarasi LCD 16x2
+  lcd.setCursor(1,0);//Memindakhkan Kursor ke kordinat 1,0
+  lcd.print("hello, world!");//Perintah penulisan kalimat pada Lcd
+  lcd.setCursor(3,1);//Memindahkan Kursor ke kordinat 3,1
+  lcd.print("Thermometer");//Perintah penulisan kalimat pada Lcd
+  delay(3000);//jeda 3 detik
+  lcd.clear();//LCD clear atau bersih yang bebarti tidak ada gambar
+}
+
+void loop() {
+  suhuC = analogRead(Pinsuhu);//Pembacaan pada pin suhu
+  suhuC = (suhuC / 1024.0)*5000;//kalibrasi suhu
+  suhuC = suhuC / 10;//kalibrasi suhu
+
+
+    lcd.begin(16,2);//Deklarasi LCD 16x2
+    lcd.setCursor(0,0);//Memindakhkan Kursor ke kordinat 0,0
+    lcd.print("Sensor Suhu");//Perintah penulisan kalimat pada Lcd
+    lcd.setCursor(0,1);//Memindahkan Kursor ke kordinat 0,1
+    lcd.print("Suhu :");//Perintah penulisan kalimat pada Lcd
+    lcd.setCursor(7,1);//Memindahkan Kursor ke kordinat 7,1
+    lcd.print(suhuC,0);//Perintah penulisan kalimat pada Lcd
+    lcd.print("\xdf");//Perintah penulisan lambang derajat pada Lcd
+    lcd.print("C");//Perintah penulisan kalimat pada Lcd
+for ( int x = 0; x <= 250; x++){ //Jeda perpindahan data pada LCD
+  delay(1); 
+}
+
+
+
+
+      //Perintah untuk menghidupkan LED level berdasarkan suhu
+      if(suhuC >= 35 && suhuC < 45){
+        low1();}
+        else {all_die();}
+      if(suhuC >= 45 && suhuC < 55){
+        low2();}
+      if(suhuC >= 55 && suhuC < 65){
+        medium1();}
+      if(suhuC >= 65  && suhuC < 75){
+        medium2();}
+      if(suhuC >= 75 && suhuC < 85){
+        high1();}
+      if (suhuC >= 85 && suhuC < 95){
+        high2();}
+      if(suhuC >= 100){
+        warnig();
+      }
+}
+void all_die(){  //void LED level0
+        digitalWrite(pinsuhulow1,LOW);
+        digitalWrite(pinsuhulow2,LOW);
+        digitalWrite(pinsuhumedium1,LOW);
+        digitalWrite(pinsuhumedium2,LOW);
+        digitalWrite(pinsuhuhigh1,LOW);
+        digitalWrite(pinsuhuhigh2,LOW);
+        digitalWrite(pinsuhuwarning,LOW);
+        digitalWrite(pin_kipas,LOW);
+}
+void low1(){    //void LED level LOW1
+        digitalWrite(pinsuhulow1,HIGH);
+        digitalWrite(pinsuhulow2,LOW);
+        digitalWrite(pinsuhumedium1,LOW);
+        digitalWrite(pinsuhumedium2,LOW);
+        digitalWrite(pinsuhuhigh1,LOW);
+        digitalWrite(pinsuhuhigh2,LOW);
+        digitalWrite(pinsuhuwarning,LOW);
+        digitalWrite(pin_kipas,LOW);
+}
+void low2(){    //void LED level LOW2
+        digitalWrite(pinsuhulow1,HIGH);
+        digitalWrite(pinsuhulow2,HIGH);
+        digitalWrite(pinsuhumedium1,LOW);
+        digitalWrite(pinsuhumedium2,LOW);
+        digitalWrite(pinsuhuhigh1,LOW);
+        digitalWrite(pinsuhuhigh2,LOW);
+        digitalWrite(pinsuhuwarning,LOW);
+        digitalWrite(pin_kipas,LOW);
+}
+void medium1(){   //void LED level MEDIUM1
+        digitalWrite(pinsuhulow1,HIGH);
+        digitalWrite(pinsuhulow2,HIGH);
+        digitalWrite(pinsuhumedium1,HIGH);
+        digitalWrite(pinsuhumedium2,LOW);
+        digitalWrite(pinsuhuhigh1,LOW);
+        digitalWrite(pinsuhuhigh2,LOW);
+        digitalWrite(pinsuhuwarning,LOW);
+        digitalWrite(pin_kipas,LOW);
+}
+void medium2(){   //void LED level MEDIUM2
+        digitalWrite(pinsuhulow1,HIGH);
+        digitalWrite(pinsuhulow2,HIGH);
+        digitalWrite(pinsuhumedium1,HIGH);
+        digitalWrite(pinsuhumedium2,HIGH);
+        digitalWrite(pinsuhuhigh1,LOW);
+        digitalWrite(pinsuhuhigh2,LOW);
+        digitalWrite(pinsuhuwarning,LOW);
+        digitalWrite(pin_kipas,LOW);
+}
+void high1(){   //void LED level HIGH1
+        digitalWrite(pinsuhulow1,HIGH);
+        digitalWrite(pinsuhulow2,HIGH);
+        digitalWrite(pinsuhumedium1,HIGH);
+        digitalWrite(pinsuhumedium2,HIGH);
+        digitalWrite(pinsuhuhigh1,HIGH);
+        digitalWrite(pinsuhuhigh2,LOW);
+        digitalWrite(pinsuhuwarning,LOW);
+        digitalWrite(pin_kipas,HIGH);
+}
+void high2(){   //void LED level HIGH2
+        digitalWrite(pinsuhulow1,HIGH);
+        digitalWrite(pinsuhulow2,HIGH);
+        digitalWrite(pinsuhumedium1,HIGH);
+        digitalWrite(pinsuhumedium2,HIGH);
+        digitalWrite(pinsuhuhigh1,HIGH);
+        digitalWrite(pinsuhuhigh2,HIGH);
+        digitalWrite(pinsuhuwarning,LOW);
+        digitalWrite(pin_kipas,HIGH);
+}
+void warnig(){    //void LED level Warning
+        digitalWrite(pinsuhulow1,HIGH);
+        digitalWrite(pinsuhulow2,HIGH);
+        digitalWrite(pinsuhumedium1,HIGH);
+        digitalWrite(pinsuhumedium2,HIGH);
+        digitalWrite(pinsuhuhigh1,HIGH);
+        digitalWrite(pinsuhuhigh2,HIGH);
+        digitalWrite(pinsuhuwarning,HIGH);
+        digitalWrite(pin_kipas,HIGH);
+        for ( int x = 0; x <= 100; x++){	//Jeda waktu 100 mili detik
+  delay(1); }
+        digitalWrite(pinsuhulow1,HIGH);
+        digitalWrite(pinsuhulow2,HIGH);
+        digitalWrite(pinsuhumedium1,HIGH);
+        digitalWrite(pinsuhumedium2,HIGH);
+        digitalWrite(pinsuhuhigh1,HIGH);
+        digitalWrite(pinsuhuhigh2,HIGH);
+        digitalWrite(pinsuhuwarning,LOW);
+        digitalWrite(pin_kipas,HIGH);
+        for ( int x = 0; x <= 100; x++){	//jeda waktu 100 mili detik
+  delay(1); }
+}
+
+    
